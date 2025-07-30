@@ -29,13 +29,42 @@ def consolidar_insumos_remision(hoja_complemento, menus_dias, grupos_raciones):
     for dia, menu_num in menus_dias.items():
         for grupo, raciones in grupos_raciones.items():
             if pd.notna(menu_num) and menu_num != 0 and raciones > 0:
-                insumos = cargar_insumos_por_menu_y_grupo(hoja_complemento, menu_num, grupo, raciones)
+                insumos = cargar_insumos_por_menu_y_grupo(
+                    hoja_complemento, menu_num, grupo, raciones
+                )
                 if not insumos.empty:
                     insumos["dia"] = dia
                     registros.append(insumos)
     if not registros:
-        return pd.DataFrame(columns=["alimento", "unidad", "grupo_etario", "cantidad_total", "dia"])
+        return pd.DataFrame(
+            columns=["alimento", "unidad", "grupo_etario", "cantidad_total", "dia"]
+        )
     return pd.concat(registros, ignore_index=True)
+
+
+def pivotar_por_grupo(insumos: pd.DataFrame, grupos: list[str]) -> pd.DataFrame:
+    """Transforma los insumos para tener una fila por alimento con columnas por grupo."""
+    if insumos.empty:
+        cols = ["alimento", "unidad", "cantidad_total"] + grupos
+        return pd.DataFrame(columns=cols)
+
+    tabla = (
+        insumos.pivot_table(
+            index=["alimento", "unidad"],
+            columns="grupo_etario",
+            values="cantidad_total",
+            aggfunc="sum",
+            fill_value=0,
+        )
+        .reset_index()
+    )
+
+    for g in grupos:
+        if g not in tabla.columns:
+            tabla[g] = 0
+
+    tabla["cantidad_total"] = tabla[grupos].sum(axis=1)
+    return tabla
 
 def aplicar_formato_fila(hoja, fila, alto=20.25):
     font = Font(name="Arial", size=8, bold=True)
@@ -153,12 +182,12 @@ def generar_excel_institucion_remision(fila, carpeta_salida):
         "viernes": fila["Viernes (Menú)"]
     }
     hoja_complemento = fila["Complemento Alimenticio"]
-    insumos = consolidar_insumos_remision(hoja_complemento, menus_dias, grupos_raciones)
+    insumos = consolidar_insumos_remision(
+        hoja_complemento, menus_dias, grupos_raciones
+    )
 
-    # Agrupar por alimento, unidad y grupo etario (suma total)
-    resumen = insumos.groupby(
-        ["alimento", "unidad", "grupo_etario"], as_index=False
-    ).sum(numeric_only=True)
+    grupos_columnas = list(grupos_raciones.keys())
+    resumen = pivotar_por_grupo(insumos, grupos_columnas)
 
     # Insertar en Excel desde la fila 15
     fila_inicio = 15
@@ -169,14 +198,11 @@ def generar_excel_institucion_remision(fila, carpeta_salida):
 
         hoja[f"A{fila_inicio}"] = row["alimento"]
         hoja[f"G{fila_inicio}"] = row["unidad"]
-        hoja[f"H{fila_inicio}"] = row["cantidad_total"]
+        hoja[f"H{fila_inicio}"] = round(row["cantidad_total"], 2)
 
-        # Colocar la cantidad en la columna correspondiente al grupo etario
-        # Mapeo: columna 2 (B) a 6 (F) corresponden a los 5 grupos
-        grupos_columnas = list(grupos_raciones.keys())
-        if row["grupo_etario"] in grupos_columnas:
-            idx = grupos_columnas.index(row["grupo_etario"])
-            hoja.cell(row=fila_inicio, column=2 + idx).value = row["cantidad_total"]
+        for idx, grupo in enumerate(grupos_columnas):
+            valor = round(row.get(grupo, 0), 2)
+            hoja.cell(row=fila_inicio, column=2 + idx).value = valor
 
         aplicar_formato_fila(hoja, fila_inicio)
         fila_inicio += 1
