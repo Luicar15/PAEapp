@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Formulario Inicial - APP PAE{% endblock %}
+{% block content %}
+<div class="card-container">
+    <h2>Generación Masiva de Documentos PAE</h2>
+    <p>Cargue un archivo Excel con las instituciones (una sola vez) y genere Kardex o Remisión.</p>
+
+    <!-- Cargar archivo -->
+    <form id="form-carga" enctype="multipart/form-data">
+        <input type="file" name="archivo_excel" accept=".xlsx, .xls" required>
+        <button type="submit" class="btn btn-primary mt-2">Cargar Archivo</button>
+    </form>
+
+    <!-- Botones para generar -->
+    <button id="btn-kardex" class="btn btn-primary mt-4" style="display:none;">Generar Kardex</button>
+    <button id="btn-remision" class="btn btn-secondary mt-2" style="display:none;">Generar Remisión</button>
+
+    <!-- Barra de progreso -->
+    <div id="progreso-container" class="mt-4" style="display:none;">
+        <label id="progreso-label"></label>
+        <div style="background:#e9ecef; height:25px; border-radius:5px; overflow:hidden;">
+            <div id="barra-interna" style="background:#007bff; width:0%; height:100%;"></div>
+        </div>
+        <p id="texto-progreso" class="mt-2"></p>
+    </div>
+
+    <!-- Botón de descarga -->
+    <div id="descarga-container" class="mt-4" style="display:none;">
+        <a id="btn-descargar" href="#" class="btn btn-success" download>Descargar PDF Consolidado</a>
+    </div>
+</div>
+
+<script>
+    let proceso = "";
+
+    document.getElementById("form-carga").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch("/formulario/cargar", { method: "POST", body: formData })
+            .then(() => {
+                document.getElementById("btn-kardex").style.display = "block";
+                document.getElementById("btn-remision").style.display = "block";
+            });
+    });
+
+    function iniciarProceso(tipo) {
+        proceso = tipo;
+        document.getElementById("progreso-container").style.display = "block";
+        document.getElementById("barra-interna").style.width = "0%";
+        document.getElementById("texto-progreso").innerText = "";
+        document.getElementById("descarga-container").style.display = "none";
+
+        fetch(`/formulario/procesar_${tipo}`, { method: "POST" }).then(() => {
+            const intervalo = setInterval(() => {
+                fetch(`/formulario/progreso_${tipo}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const total = data.total || 0;
+                        const procesadas = data.procesadas || 0;
+                        const porcentaje = total ? (procesadas / total) * 100 : 0;
+
+                        document.getElementById("progreso-label").innerText =
+                            `Generando ${tipo.toUpperCase()}`;
+                        document.getElementById("barra-interna").style.width = porcentaje + "%";
+                        document.getElementById("texto-progreso").innerText =
+                            `Procesadas ${procesadas} de ${total} instituciones.`;
+
+                        if (data.completado) {
+                            clearInterval(intervalo);
+                            document.getElementById("btn-descargar")
+                                .setAttribute("href", `/formulario/descargar_${tipo}`);
+                            document.getElementById("descarga-container").style.display = "block";
+                        }
+                    });
+            }, 1000);
+        });
+    }
+
+    document.getElementById("btn-kardex").addEventListener("click", () => iniciarProceso("kardex"));
+    document.getElementById("btn-remision").addEventListener("click", () => iniciarProceso("remision"));
+</script>
+{% endblock %}

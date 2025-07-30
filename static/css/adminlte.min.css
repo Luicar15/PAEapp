@@ -1,0 +1,9 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #f4f6f9;
+}
+.navbar { background-color: #fff; padding: .5rem 1rem; border-bottom: 1px solid #dee2e6; }
+.main-sidebar { background-color: #343a40; color: white; min-height: 100vh; width: 250px; float: left; }
+.content-wrapper { margin-left: 250px; padding: 1rem; }
+.card { background: #fff; border-radius: .25rem; border: 1px solid #dee2e6; box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); margin-bottom: 1rem; }
+.card-header { border-bottom: 1px solid #dee2e6; padding: .75rem 1.25rem; font-weight: 600; }

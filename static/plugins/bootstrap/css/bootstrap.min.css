@@ -1,0 +1,38 @@
+/* static/plugins/bootstrap/css/bootstrap.min.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.table th, .table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+.alert {
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  background: #f8d7da;
+  color: #721c24;
+}
+.btn, .action-btn {
+  display: inline-block;
+  background: #007bff;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  text-decoration: none;
+}
+.btn:hover, .action-btn:hover {
+  background: #0056b3;
+}

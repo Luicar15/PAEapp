@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}APP PAE - LCD Solutions{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos locales -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Logo -->
+    <a href="/" class="brand-link text-center">
+      <img src="{{ url_for('static', filename='img/logo_lcd.png') }}" alt="Logo LCD" class="brand-image" style="opacity: .9; width: 60px;">
+      <span class="brand-text font-weight-light d-block">APP PAE</span>
+    </a>
+
+    <div class="sidebar">
+      <nav class="mt-3">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+          <!-- Módulo Operativo -->
+          <li class="nav-item has-treeview {% if request.path in ['/formulario', '/vista-preliminar', '/orden-compra'] %}menu-open{% endif %}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>Módulo Operativo<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview" {% if request.path in ['/formulario', '/vista-preliminar', '/orden-compra'] %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+              <li class="nav-item">
+                <a href="/formulario" class="nav-link {% if request.path == '/formulario' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Formulario Inicial</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/vista-preliminar" class="nav-link {% if request.path == '/vista-preliminar' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Vista Preliminar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/orden-compra" class="nav-link {% if request.path == '/orden-compra' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Orden de Compra</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Inventario -->
+          <li class="nav-item has-treeview {% if request.path in ['/inventario', '/categorias', '/unidades-medida'] %}menu-open{% endif %}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-boxes-stacked"></i>
+              <p>Inventario<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview" {% if request.path in ['/inventario', '/categorias', '/unidades-medida'] %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+              <li class="nav-item">
+                <a href="/inventario" class="nav-link {% if request.path == '/inventario' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Gestión de Insumos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/categorias" class="nav-link {% if request.path == '/categorias' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Categorías de Alimentos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/unidades-medida" class="nav-link {% if request.path == '/unidades-medida' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Unidades de Medida</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Administración -->
+          <li class="nav-item has-treeview {% if request.path in ['/instituciones', '/sedes', '/ciclos-menu', '/menus-etarios'] %}menu-open{% endif %}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-building"></i>
+              <p>Administración<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview" {% if request.path in ['/instituciones', '/sedes', '/ciclos-menu', '/menus-etarios'] %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+              <li class="nav-item">
+                <a href="/instituciones" class="nav-link {% if request.path == '/instituciones' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Instituciones</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/sedes" class="nav-link {% if request.path == '/sedes' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Sedes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/ciclos-menu" class="nav-link {% if request.path == '/ciclos-menu' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Ciclos de Menú</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/menus-etarios" class="nav-link {% if request.path == '/menus-etarios' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Menús por Grupo Etario</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Configuración -->
+          <li class="nav-item has-treeview {% if request.path in ['/parametros', '/archivos-base', '/usuarios'] %}menu-open{% endif %}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>Configuración<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview" {% if request.path in ['/parametros', '/archivos-base', '/usuarios'] %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+              <li class="nav-item">
+                <a href="/parametros" class="nav-link {% if request.path == '/parametros' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Parámetros</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/archivos-base" class="nav-link {% if request.path == '/archivos-base' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Archivos Base</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/usuarios" class="nav-link {% if request.path == '/usuarios' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i><p>Usuarios</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+<div class="content-wrapper d-flex flex-column min-vh-100">
+  <section class="content pt-3 px-3 flex-grow-1">
+    {% block content %}{% endblock %}
+  </section>
+
+  <!-- Footer integrado -->
+  <footer class="main-footer text-center mt-auto">
+    <strong>LCD Solutions</strong> - Todos los derechos reservados
+  </footer>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

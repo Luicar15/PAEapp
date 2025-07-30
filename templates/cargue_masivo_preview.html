@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Vista Previa - APP PAE{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h2>Vista Previa de Datos Cargados</h2>
+    <p>Se muestran los primeros 10 registros cargados:</p>
+    <div class="table-responsive">
+      {{ preview|safe }}
+    </div>
+    <a href="/cargue-masivo" class="btn btn-secondary mt-3">Volver</a>
+  </div>
+</div>
+{% endblock %}

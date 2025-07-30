@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Cargue Masivo - APP PAE{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h2>Cargue Masivo de Documentos PAE</h2>
+    <p>Cargue un archivo Excel con la información de todas las sedes e instituciones.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <input type="file" name="archivo_excel" accept=".xlsx,.xls" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Procesar y Guardar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

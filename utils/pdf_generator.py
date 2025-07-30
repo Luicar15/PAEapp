@@ -1,0 +1,1 @@
+def generar_pdf(data): pass
